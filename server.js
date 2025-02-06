@@ -21,4 +21,4 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => console.log("mongodb disconnected", error));
 
 app.listen(PORT, () => console.log(`server running ${PORT}`));
-  
+      
