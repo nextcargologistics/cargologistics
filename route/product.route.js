@@ -1,5 +1,5 @@
 import express from "express";
-import productController from '../Products/product.controller.js'
+import productController from '../controllers/product.controller.js'
 
 import multer from "multer";
 

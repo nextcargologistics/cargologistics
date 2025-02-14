@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Admin from "../admin-auth/admin.auth.model.js";
+import Admin from '../models/admin.auth.model.js'
 
 const signup = async (req, res) => {
   try {

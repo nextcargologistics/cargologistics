@@ -1,4 +1,4 @@
-import UserOrder from '../user-order/order.model.js'
+import UserOrder from '../models/order.model.js'
 
  const createUserOrder = async (req, res) => {
   try {
