@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const branchSchema = new mongoose.Schema({
-    uniqueId:{type:String,required:true},
+    branchUniqueId:{type:String,required:true},
     adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: false }, 
     employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: false }, 
     name:{type:String,required:true},

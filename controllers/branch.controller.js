@@ -41,10 +41,10 @@ const createBranch = async (req, res) => {
         .json({ success: false, message: "Required fields are missing!" });
     }
 
-    const uniqueId = generateUniqueId(city, name);
+    const branchUniqueId = generateUniqueId(city, name);
 
     const newBranch = new Branch({
-      uniqueId,
+      branchUniqueId,
       adminId,
       employeeId,
       name,
@@ -77,38 +77,48 @@ const getAllBranches = async (req, res) => {
     const branches = await Branch.find()
       .populate("adminId")
       .populate("employeeId");
-    res.status(200).json({ success: true, data: branches });
+    res.status(200).json(branches);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 // Get Branch by ID
-const getBranchById = async (req, res) => {
+const getBranchByUniqueId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const branch = await Branch.findById(id)
-      .populate("adminId")
-      .populate("employeeId");
+    const { branchUniqueId } = req.params;
+    const branch = await Branch.findOne({branchUniqueId})
 
     if (!branch) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Branch not found" });
-    }
+       return res.status(404).json({ success: false, message: "Branch not found" });
+       }
 
-    res.status(200).json({ success: true, data: branch });
+    res.status(200).json(branch);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const getbranchId=async(req,res) => {
+  try{
+    const {id}=req.params
+    const branch=await Branch.findById(id)
+    if(!branch){
+      return res.status(404).json({message:"branch id not found !"})
+    }
+    res.status(200).json(branch)
+  }
+  catch(error){
+    res.status(500).json({error:error.message})
+  }
+}
 
 // Update Branch
 const updateBranch = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      uniqueId,
+      branchUniqueId,
       adminId,
       employeeId,
       name,
@@ -126,7 +136,7 @@ const updateBranch = async (req, res) => {
     const updatedBranch = await Branch.findByIdAndUpdate(
       id,
       {
-        uniqueId,
+        branchUniqueId,
         adminId,
         employeeId,
         name,
@@ -184,7 +194,8 @@ const deleteBranch = async (req, res) => {
 export default {
   createBranch,
   getAllBranches,
-  getBranchById,
+  getBranchByUniqueId,
+  getbranchId,
   updateBranch,
   deleteBranch,
 };

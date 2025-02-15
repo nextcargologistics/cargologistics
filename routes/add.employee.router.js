@@ -11,7 +11,7 @@ router.post("/change-password",employeeController.changePassword)
 
 router.get("/",employeeController.getAllEmployees)
 
-router.get("/:id",employeeController.getEmployeeById)
+router.get("/:employeeId",employeeController.getEmployeeId)
 
 router.delete("/:id",employeeController.deleteEmployee)
 
