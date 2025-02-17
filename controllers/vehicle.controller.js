@@ -3,9 +3,9 @@ import Vehicle from '../models/vehicle.model.js';
 // Create a new vehicle
 const createVehicle = async (req, res) => {
     try {
-        const { vehicleNo, vehicleType, registrationNo, date, RC, polutionExpDate, fuelType, branchId } = req.body;
+        const { vehicleNo, vehicleType, registrationNo, date, RC, polutionExpDate, fuelType, branch } = req.body;
 
-        if (!vehicleNo || !vehicleType || !registrationNo || !date || !RC || !polutionExpDate || !fuelType || !branchId) {
+        if (!vehicleNo || !vehicleType || !registrationNo || !date || !RC || !polutionExpDate || !fuelType || !branch) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -17,7 +17,7 @@ const createVehicle = async (req, res) => {
             RC,
             polutionExpDate,
             fuelType,
-            branchId
+            branch
         });
 
         await vehicle.save();
@@ -41,7 +41,7 @@ const getAllVehicles = async (req, res) => {
 const getVehicleById = async (req, res) => {
     try {
         const { id } = req.params;
-        const vehicle = await Vehicle.findById(id).populate("branchId", "branchName");
+        const vehicle = await Vehicle.findById(id).populate("branch", "branchName");
 
         if (!vehicle) return res.status(404).json({ message: "Vehicle not found" });
 

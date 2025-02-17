@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
+  grnNoUnique:{type:String,required:true},
   adminId:{type:mongoose.Schema.Types.ObjectId,ref:"Admin"},
   employeeId:{type:mongoose.Schema.Types.ObjectId,ref:"Employee"},
   fromCity: { type: String, required: true },
@@ -11,23 +12,30 @@ const bookingSchema = new mongoose.Schema({
   bookingType: { type: String, enum: ["paid", "toPay", "creditFor", "FOC"], required: true },
   quantity: { type: Number, required: true },
   packageType: { type: String, enum: ["Box", "Bag", "Envelope"], required: true }, 
-  contains: { type: String },
-  weight: { type: String },
-  unitPrice: { type: String },
-  totalPrice: { type: String },
-  receiptNo: { type: String, unique: true }, 
+  contains: { type: Number,default:0 },
+  weight: { type: Number },
+  actualWeight:{type:Number,default:0},
+  unitPrice: { type: Number,required:true },
+  totalPrice: { type: Number,default:0 },
+  receiptNo: { type: String,default:0 }, 
   eWayBillNo: { type: String },
   remarks: { type: String },
-
   senderName: { type: String, required: true },
-  senderMobile: { type: String, required: true },
+  senderMobile: { type: String, required: true,default:0 },
   senderAddress: { type: String, required: true },
-  senderGst: { type: String },
-
+  senderGst: { type: String },  
   receiverName: { type: String, required: true },
-  receiverMobile: { type: String, required: true },
+  receiverMobile: { type: String, required: true,default:0 },
   receiverAddress: { type: String, required: true },
   receiverGst: { type: String },
+  parcelGst:{type:String},
+  grandTotal:{type:Number,default:0},
+  serviceCharge:{type:Number,default:0},
+  hamaliCharge:{type:Number,default:0},
+  doorDeliveryCharge:{type:Number,default:0},
+  doorPickupCharge:{type:Number,default:0},
+  valueOfGoods:{type:Number,default:0}
+
 }, { timestamps: true });
 
 export default mongoose.model("Booking", bookingSchema);
