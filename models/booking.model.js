@@ -4,6 +4,8 @@ const bookingSchema = new mongoose.Schema({
   grnNoUnique:{type:String,required:true},
   adminUniqueId:{type:Number},
   employeeUniqueId:{type:Number},
+  adminId:{type:mongoose.Schema.Types.ObjectId,ref:'Admin'},
+  employeeId:{type:mongoose.Schema.Types.ObjectId,ref:'Employee'},
   fromCity: { type: String, required: true },
   toCity: { type: String, required: true },
   pickUpBranch: { type: String, required: true },

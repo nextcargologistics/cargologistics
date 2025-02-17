@@ -2,6 +2,7 @@ import Employee from '../models/addemployee.model.js'
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+
 const generateEmployeeId = () => Math.floor(100000 + Math.random() * 900000)
 
 
@@ -45,7 +46,7 @@ const createEmployee = async (req, res) => {
   
 const loginEmployee = async (req, res) => {
     try {
-        const { identifier, password } = req.body; // identifier can be phone or email
+        const { identifier, password } = req.body; 
         if (!identifier || !password) {
             return res.status(400).json({ success: false, message: "Phone/Email and password are required" });
         }
@@ -65,9 +66,9 @@ const loginEmployee = async (req, res) => {
         }
 
         // Generate JWT Token
-        const token = jwt.sign({ id: employee._id, role: employee.role }, "your_secret_key", { expiresIn: "1d" });
+        const token = jwt.sign({ id: employee._id, role: employee.role }, "JWT_SECRET", { expiresIn: "1d" });
 
-        res.status(200).json({ success: true, message: "Login successful", token, employee});
+        res.status(200).json({message: "Login successful", token,employeeId:employee._id,employeeUniqueId:employee._id});
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
