@@ -10,11 +10,11 @@ const generateGrnNoUnique = (fromCity, pickUpBranch) => {
 const createBooking = async (req, res) => {
   try {
     const { 
-      adminId, employeeId,
+      adminUniqueId, employeeUniqueId,
       fromCity, toCity, pickUpBranch, dropBranch, dispatchType, bookingType,
       quantity, packageType, senderName, senderMobile, senderAddress, unitPrice,
       receiverName, receiverMobile, receiverAddress, serviceCharge = 0, 
-      hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0,valueOfGoods=0,
+      hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0,valueOfGoods=0,bookingStatus,
       receiptNo // Ensure receiptNo is extracted
     } = req.body;
 
@@ -36,8 +36,8 @@ const createBooking = async (req, res) => {
 
     // Create new booking object
     const booking = new Booking({
-      adminId,
-      employeeId,
+      adminUniqueId,
+      employeeUniqueId,
       fromCity,
       toCity,
       pickUpBranch,
@@ -61,7 +61,8 @@ const createBooking = async (req, res) => {
       hamaliCharge,
       doorDeliveryCharge,
       doorPickupCharge,
-      valueOfGoods
+      valueOfGoods,
+      bookingStatus
     });
 
     await booking.save();
@@ -104,6 +105,35 @@ const getAllBookings = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+
+  const getBookingadminUniqueId=async(req,res) => {
+    try{
+     const {adminUniqueId}=req.params
+     const booking=await Booking.find({adminUniqueId})
+     if(!booking){
+      return res.status(404).json({message:"No adminUniqueId bookings !"})
+     }
+     res.status(200).json(booking)
+    }
+    catch(error){
+      res.status(500).json({error:error.message})
+    }
+  }
+
+  const getBookingemployeeUniqueId=async(req,res) => {
+    try{
+      const {employeeUniqueId}=req.params
+      const booking=await Booking.find({employeeUniqueId})
+
+      if(!booking){
+        return res.status(404).json({message:"No employeeUniqueId in bookings !"})
+      }
+      res.status(200).json(booking)
+    }
+    catch(error){
+      res.status(500).json({error:error.message})
+    }
+  }
   
   const getBookingBysenderMobile = async(req,res) => {
     try{
@@ -194,4 +224,15 @@ const getAllBookings = async (req, res) => {
     }
   }
    
-export default {createBooking,getAllBookings,getBookingByGrnNo,deleteBookings,updateBookings,getBookingBysenderMobile,getBookingbyreceiverMobile,getBookingsenderName,getBookingsreceiverName}
+export default {createBooking,
+  getAllBookings,
+  getBookingByGrnNo,
+  deleteBookings,
+  updateBookings,
+  getBookingBysenderMobile,
+  getBookingbyreceiverMobile,
+  getBookingsenderName,
+  getBookingsreceiverName,
+  getBookingadminUniqueId,
+  getBookingemployeeUniqueId
+}

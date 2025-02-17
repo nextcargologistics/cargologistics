@@ -2,7 +2,7 @@ import Employee from '../models/addemployee.model.js'
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const generateEmployeeId = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateEmployeeId = () => Math.floor(100000 + Math.random() * 900000)
 
 
 const createEmployee = async (req, res) => {
@@ -18,8 +18,8 @@ const createEmployee = async (req, res) => {
         return res.status(400).json({ success: false, message: "Phone number already in use" });
       }
   
-      const employeeUniqueId = generateEmployeeId(); // Generate Employee ID
-      const hashedPassword = await bcrypt.hash(phone, 10); // Hash password (same as phone)
+      const employeeUniqueId = generateEmployeeId(); 
+      const hashedPassword = await bcrypt.hash(phone, 10); 
   
       const employee = new Employee({
         employeeUniqueId,

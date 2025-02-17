@@ -9,6 +9,10 @@ router.get("/",bookingCotroller.getAllBookings)
 
 router.get("/grnNoUnique/:grnNoUnique",bookingCotroller.getBookingByGrnNo)
 
+router.get("/adminUniqueId/:adminUniqueId",bookingCotroller.getBookingadminUniqueId)
+
+router.get("/employeeUniqueId/:employeeUniqueId",bookingCotroller.getBookingemployeeUniqueId)
+
 router.get("/senderMobile/:senderMobile",bookingCotroller.getBookingBysenderMobile)
 
 router.get("/receiverMobile/:receiverMobile",bookingCotroller.getBookingbyreceiverMobile)

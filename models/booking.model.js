@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const bookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema({ 
   grnNoUnique:{type:String,required:true},
-  adminId:{type:mongoose.Schema.Types.ObjectId,ref:"Admin"},
-  employeeId:{type:mongoose.Schema.Types.ObjectId,ref:"Employee"},
+  adminUniqueId:{type:Number},
+  employeeUniqueId:{type:Number},
   fromCity: { type: String, required: true },
   toCity: { type: String, required: true },
   pickUpBranch: { type: String, required: true },
@@ -34,7 +34,8 @@ const bookingSchema = new mongoose.Schema({
   hamaliCharge:{type:Number,default:0},
   doorDeliveryCharge:{type:Number,default:0},
   doorPickupCharge:{type:Number,default:0},
-  valueOfGoods:{type:Number,default:0}
+  valueOfGoods:{type:Number,default:0},
+  bookingStatus:{type:String,enum:['active','inactive'],default:"active"}
 
 }, { timestamps: true });
 

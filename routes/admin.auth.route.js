@@ -7,6 +7,8 @@ router.post("/signup",adminAuth.signup)
 
 router.post("/login",adminAuth.login)
 
+router.post("/change-password",adminAuth.ChangeAdminPassword)
+
 router.get("/subadmins",adminAuth.getAllSubadmins)
 
 router.delete("/:id",adminAuth.deleteSubadmin)
