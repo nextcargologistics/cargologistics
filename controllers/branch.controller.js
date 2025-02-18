@@ -10,11 +10,10 @@ const generateUniqueId = (city, name) => {
   return `${cityCode}${nameCode}${randomNum}`;
 };
 
-// Validation middleware for branch creation
 export  const validateBranch = [
   body("name").trim().notEmpty().withMessage("Name is required."),
   body("city").trim().notEmpty().withMessage("City is required."),
-  body("address").trim().notEmpty().withMessage("Address is required."),
+  body("address").trim().notEmpty().withMessage("Address is require."),
   body("phone")
     .trim()
     .isNumeric()
@@ -131,7 +130,7 @@ const deleteBranch = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ success: false, message: "Branch ID is required" });
-    
+
 
     const deletedBranch = await Branch.findByIdAndDelete(id);
     if (!deletedBranch) return res.status(404).json({ success: false, message: "Branch not found" });
