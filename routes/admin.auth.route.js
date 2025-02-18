@@ -7,11 +7,11 @@ router.post("/signup",adminAuth.signup)
 
 router.post("/login",adminAuth.login)
 
-router.post("/change-password",adminAuth.ChangeAdminPassword)
+router.post("/change-password",adminAuth.changeAdminPassword)
 
-router.get("/subadmins",adminAuth.getAllSubadmins)
+router.get("/admins",adminAuth.getAllAdmins)
 
-router.delete("/:id",adminAuth.deleteSubadmin)
+router.delete("/:id",adminAuth.deleteAdmin)
 
 
 

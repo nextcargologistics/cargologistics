@@ -1,11 +1,9 @@
 import mongoose from "mongoose";
 
-const bookingSchema = new mongoose.Schema({ 
+const bookingSchema = new mongoose.Schema({  
   grnNoUnique:{type:String,required:true},
-  adminUniqueId:{type:Number},
-  employeeUniqueId:{type:Number},
-  adminId:{type:mongoose.Schema.Types.ObjectId,ref:'Admin'},
-  employeeId:{type:mongoose.Schema.Types.ObjectId,ref:'Employee'},
+  adminUniqueId:{type:Number,required:true},
+  adminId:{type:mongoose.Schema.Types.ObjectId,ref:'Admin',required:true},
   fromCity: { type: String, required: true },
   toCity: { type: String, required: true },
   pickUpBranch: { type: String, required: true },
@@ -37,8 +35,8 @@ const bookingSchema = new mongoose.Schema({
   doorDeliveryCharge:{type:Number,default:0},
   doorPickupCharge:{type:Number,default:0},
   valueOfGoods:{type:Number,default:0},
-  bookingStatus:{type:String,enum:['active','inactive'],default:"active"}
+  bookingStatus:{type:Number,enum:[0,1,2,3,4],default:0}
 
 }, { timestamps: true });
 
-export default mongoose.model("Booking", bookingSchema);
+export default mongoose.model("Booking", bookingSchema);  

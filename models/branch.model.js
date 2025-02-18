@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 const branchSchema = new mongoose.Schema({
     branchUniqueId:{type:String,required:true},
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: false }, 
-    employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: false }, 
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true },
     name:{type:String,required:true},
     city:{type:String,required:true},
     address:{type:String,required:true},

@@ -13,7 +13,6 @@ const createBranch = async (req, res) => {
   try {
     const {
       adminId,
-      employeeId,
       name,
       city,
       address,
@@ -27,6 +26,7 @@ const createBranch = async (req, res) => {
     } = req.body;
 
     if (
+      !adminId ||
       !name ||
       !city ||
       !address ||
@@ -46,7 +46,6 @@ const createBranch = async (req, res) => {
     const newBranch = new Branch({
       branchUniqueId,
       adminId,
-      employeeId,
       name,
       city,
       address,
@@ -75,8 +74,9 @@ const createBranch = async (req, res) => {
 const getAllBranches = async (req, res) => {
   try {
     const branches = await Branch.find()
-      .populate("adminId")
-      .populate("employeeId");
+    if(!branches){
+      return res.status(404).json({message:"No data found in branches"})
+    }
     res.status(200).json(branches);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

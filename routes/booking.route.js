@@ -11,8 +11,6 @@ router.get("/grnNoUnique/:grnNoUnique",bookingCotroller.getBookingByGrnNo)
 
 router.get("/adminUniqueId/:adminUniqueId",bookingCotroller.getBookingadminUniqueId)
 
-router.get("/employeeUniqueId/:employeeUniqueId",bookingCotroller.getBookingemployeeUniqueId)
-
 router.get("/senderMobile/:senderMobile",bookingCotroller.getBookingBysenderMobile)
 
 router.get("/receiverMobile/:receiverMobile",bookingCotroller.getBookingbyreceiverMobile)
@@ -20,6 +18,8 @@ router.get("/receiverMobile/:receiverMobile",bookingCotroller.getBookingbyreceiv
 router.get("/senderName/:senderName",bookingCotroller.getBookingsenderName)
 
 router.get("/receiverName/:receiverName",bookingCotroller.getBookingsreceiverName)
+
+router.get("/pickUpBranch/:pickUpBranch",bookingCotroller.getBookingPickUpBranch)
 
 router.delete("/:id",bookingCotroller.deleteBookings)
 

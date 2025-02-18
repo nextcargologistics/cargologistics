@@ -10,18 +10,18 @@ const generateGrnNoUnique = (fromCity, pickUpBranch) => {
 const createBooking = async (req, res) => {
   try {
     const { 
-      adminUniqueId, employeeUniqueId,
+      
       fromCity, toCity, pickUpBranch, dropBranch, dispatchType, bookingType,
       quantity, packageType, senderName, senderMobile, senderAddress, unitPrice,
       receiverName, receiverMobile, receiverAddress, serviceCharge = 0, 
       hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0,valueOfGoods=0,
-      bookingStatus,receiptNo ,adminId,employeeId} = req.body;
+      bookingStatus,receiptNo ,adminUniqueId,adminId,} = req.body;
 
     // Required fields validation
     const requiredFields = [
       "fromCity", "toCity", "pickUpBranch", "dropBranch", "dispatchType", "bookingType",
       "quantity", "packageType", "senderName", "senderMobile", "senderAddress", "unitPrice",
-      "receiverName", "receiverMobile", "receiverAddress"
+      "receiverName", "receiverMobile", "receiverAddress","adminUniqueId","adminId"
     ];
 
     for (const field of requiredFields) {
@@ -35,8 +35,7 @@ const createBooking = async (req, res) => {
 
     // Create new booking object
     const booking = new Booking({
-      adminUniqueId,
-      employeeUniqueId,
+      
       fromCity,
       toCity,
       pickUpBranch,
@@ -62,8 +61,8 @@ const createBooking = async (req, res) => {
       doorPickupCharge,
       valueOfGoods,
       bookingStatus,
+      adminUniqueId,
       adminId,
-      employeeId
     });
 
     await booking.save();
@@ -77,7 +76,7 @@ const createBooking = async (req, res) => {
 
 const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("adminId","employeeId")
+    const bookings = await Booking.find().populate("adminId")
     if (bookings.length === 0) {
       return res.status(404).json({ success: false, message: "No bookings found" });
     }
@@ -110,7 +109,7 @@ const getAllBookings = async (req, res) => {
   const getBookingadminUniqueId=async(req,res) => {
     try{
      const {adminUniqueId}=req.params
-     const booking=await Booking.find({adminUniqueId}).populate("adminId",'name email role')
+     const booking=await Booking.find({adminUniqueId}).populate("adminId",'name email role  username phone branchName branchId ')
      if(!booking){
       return res.status(404).json({message:"No adminUniqueId bookings !"})
      }
@@ -121,25 +120,11 @@ const getAllBookings = async (req, res) => {
     }
   }
 
-  const getBookingemployeeUniqueId=async(req,res) => {
-    try{
-      const {employeeUniqueId}=req.params
-      const booking=await Booking.find({employeeUniqueId}).populate("employeeId",'name username phone branchName branchId')
-
-      if(!booking){
-        return res.status(404).json({message:"No employeeUniqueId in bookings !"})
-      }
-      res.status(200).json(booking)
-    }
-    catch(error){
-      res.status(500).json({error:error.message})
-    }
-  }
   
   const getBookingBysenderMobile = async(req,res) => {
     try{
       const {senderMobile}=req.params
-      const booking=await Booking.findOne({senderMobile})
+      const booking=await Booking.find({senderMobile})
 
       if(!booking){
         return res.status(404).json({message:"No bookings found!"})
@@ -154,7 +139,7 @@ const getAllBookings = async (req, res) => {
   const getBookingbyreceiverMobile=async(req,res) => {
     try{
       const {receiverMobile}=req.params
-      const booking=await Booking.findOne({receiverMobile})
+      const booking=await Booking.find({receiverMobile})
       if(!booking){
         return res.status(404).json({message:"No receiverMobile "})
       }
@@ -191,6 +176,20 @@ const getAllBookings = async (req, res) => {
     catch(error){
       res.status(500).json({message:error.message})
     }
+  }
+
+  const getBookingPickUpBranch=async(req,res) => {
+    try{
+      const {pickUpBranch} =req.params
+      const booking= await Booking.find({pickUpBranch})
+      if(!booking){
+        return res.status(404).json({message:"pickUpBranch not found in bookings"})
+      }
+      res.status(200).json(booking)
+      }
+      catch(error){
+        res.status(500).json({message:error.message})
+      }
   }
 
   const deleteBookings=async(req,res) =>{
@@ -235,5 +234,5 @@ export default {createBooking,
   getBookingsenderName,
   getBookingsreceiverName,
   getBookingadminUniqueId,
-  getBookingemployeeUniqueId
+  getBookingPickUpBranch
 }
