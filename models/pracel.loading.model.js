@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const parcelSchema = new mongoose.Schema({
+const parcelSchema = new mongoose.Schema({  //
     branch: { type:String, required: true },
     vehicleType: { type: String, required: true, trim: true }, 
     driverName: { type: String, required: true, trim: true },
