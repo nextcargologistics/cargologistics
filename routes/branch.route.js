@@ -1,14 +1,14 @@
 import express from "express";
 import branchController from '../controllers/branch.controller.js'
-import { validateBranch } from "../controllers/branch.controller.js";
-import { createBranch } from "../controllers/branch.controller.js"; // Import controller
+
 
 
 const router = express.Router();
 
-router.post("/", validateBranch, createBranch); // validateBranch is used here
+router.post("/", branchController.validateBranch,branchController.createBranch); // validateBranch is used here
 router.get("/", branchController.getAllBranches); 
-router.get("/:id", branchController.getBranchById); 
+router.get("/branchUniqueId/:branchUniqueId", branchController.getBranchByUniqueId); 
+ router.get("/:id",branchController.getbranchId)
 router.patch("/update/:id", branchController.updateBranch); 
 router.delete("/delete/:id", branchController.deleteBranch);
 

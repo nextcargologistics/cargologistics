@@ -10,7 +10,7 @@ const generateUniqueId = (city, name) => {
   return `${cityCode}${nameCode}${randomNum}`;
 };
 
-export  const validateBranch = [
+  const validateBranch = [
   body("name").trim().notEmpty().withMessage("Name is required."),
   body("city").trim().notEmpty().withMessage("City is required."),
   body("address").trim().notEmpty().withMessage("Address is require."),
@@ -37,25 +37,56 @@ export  const validateBranch = [
 ];
 
 // Create Branch
-export  const createBranch = async (req, res) => {
+  const createBranch = async (req, res) => {
   try {
-    // Validate request body
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
+    const {
+      adminId,
+      employeeId,
+      name,
+      city,
+      address,
+      phone,
+      email,
+      pincode,
+      state,
+      country,
+      alternateMobile,
+      status,
+    } = req.body;
+
+    if (
+      !name ||
+      !city ||
+      !address ||
+      !phone ||
+      !email ||
+      !pincode ||
+      !state ||
+      !country
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Required fields are missing!" });
     }
 
-    // Sanitize inputs
-    const sanitizedData = {};
-    Object.keys(req.body).forEach((key) => {
-      sanitizedData[key] = sanitizeHtml(req.body[key]);
+    const uniqueId = generateUniqueId(city, name);
+
+    const newBranch = new Branch({
+      uniqueId,
+      adminId,
+      employeeId,
+      name,
+      city,
+      address,
+      phone,
+      email,
+      pincode,
+      state,
+      country,
+      alternateMobile,
+      status,
     });
 
-    // Generate unique ID
-    sanitizedData.uniqueId = generateUniqueId(sanitizedData.city, sanitizedData.name);
-
-    // Create and save branch
-    const newBranch = new Branch(sanitizedData);
     await newBranch.save();
 
     return res.status(201).json({
@@ -76,7 +107,9 @@ export  const createBranch = async (req, res) => {
 // Get All Branches
 const getAllBranches = async (req, res) => {
   try {
-    const branches = await Branch.find().populate("adminId employeeId");
+    const branches = await Branch.find()
+      .populate("adminId")
+      .populate("employeeId");
     res.status(200).json({ success: true, data: branches });
   } catch (error) {
     console.error("Get Branches Error:", error);
@@ -85,38 +118,85 @@ const getAllBranches = async (req, res) => {
 };
 
 // Get Branch by ID
-const getBranchById = async (req, res) => {
+const getBranchByUniqueId = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ success: false, message: "Branch ID is required" });
+    const branch = await Branch.findById(id)
+      .populate("adminId")
+      .populate("employeeId");
 
-    const branch = await Branch.findById(id).populate("adminId employeeId");
-    if (!branch) return res.status(404).json({ success: false, message: "Branch not found" });
+    if (!branch) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Branch not found" });
+    }
 
-    res.status(200).json({ success: true, data: branch });
+    res.status(200).json(branch);
   } catch (error) {
     console.error("Get Branch by ID Error:", error);
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
 
+const getbranchId=async(req,res) => {
+  try{
+    const {id}=req.params
+    const branch=await Branch.findById(id)
+    if(!branch){
+      return res.status(404).json({message:"branch id not found !"})
+    }
+    res.status(200).json(branch)
+  }
+  catch(error){
+    res.status(500).json({error:error.message})
+  }
+}
+
 // Update Branch
 const updateBranch = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ success: false, message: "Branch ID is required" });
+    const {
+      uniqueId,
+      adminId,
+      employeeId,
+      name,
+      city,
+      address,
+      phone,
+      email,
+      pincode,
+      state,
+      country,
+      alternateMobile,
+      status,
+    } = req.body;
 
-    // Allow only specific fields to be updated
-    const allowedFields = ["name", "city", "address", "phone", "email", "pincode", "state", "country", "aphone"];
-    const updatedData = {};
-    Object.keys(req.body).forEach((key) => {
-      if (allowedFields.includes(key)) {
-        updatedData[key] = sanitizeHtml(req.body[key]);
-      }
-    });
+    const updatedBranch = await Branch.findByIdAndUpdate(
+      id,
+      {
+        uniqueId,
+        adminId,
+        employeeId,
+        name,
+        city,
+        address,
+        phone,
+        email,
+        pincode,
+        state,
+        country,
+        alternateMobile,
+        status,
+      },
+      { new: true }
+    );
 
-    const updatedBranch = await Branch.findByIdAndUpdate(id, updatedData, { new: true });
-    if (!updatedBranch) return res.status(404).json({ success: false, message: "Branch not found" });
+    if (!updatedBranch) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Branch not found" });
+    }
 
     res.status(200).json({ success: true, message: "Branch updated successfully", data: updatedBranch });
   } catch (error) {
@@ -142,4 +222,12 @@ const deleteBranch = async (req, res) => {
   }
 };
 
-export default { createBranch, getAllBranches, getBranchById, updateBranch, deleteBranch, validateBranch };
+export default {
+  createBranch,
+  getAllBranches,
+  updateBranch,
+  deleteBranch,
+  getbranchId,
+  getBranchByUniqueId,
+  validateBranch
+};
