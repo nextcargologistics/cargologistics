@@ -62,9 +62,12 @@ const login = async (req, res) => {
     }
 
     // 🔹 Get the current IP address
-    const ipAddress = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    // const ipAddress = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-    
+    const ipAddress = req.headers["x-forwarded-for"]
+  ? req.headers["x-forwarded-for"].split(",")[0].trim() // Get first (real) IP
+  : req.socket?.remoteAddress || req.connection?.remoteAddress;
+
 
     // 🔹 Update the admin's IP address in the database
     await Admin.findByIdAndUpdate(admin._id, { ipAddress });
