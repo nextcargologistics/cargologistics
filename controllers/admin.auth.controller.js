@@ -40,7 +40,6 @@ const signup = async (req, res) => {
   }
 };
 
-// **Admin Login**
 const login = async (req, res) => {
   try {
     const { identifier, password } = req.body; // identifier can be email or phone
@@ -62,6 +61,14 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // 🔹 Get the current IP address
+    const ipAddress = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+    
+
+    // 🔹 Update the admin's IP address in the database
+    await Admin.findByIdAndUpdate(admin._id, { ipAddress });
+
     // Generate JWT token
     const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
@@ -69,13 +76,15 @@ const login = async (req, res) => {
       message: "Login successful",
       token,
       id: admin._id,
-      role:admin.role,
+      role: admin.role,
       uniqueId: admin.adminUniqueId,
+      ipAddress, // 🔹 Return updated IP address
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
 
 // **Change Admin Password**
 const changeAdminPassword = async (req, res) => {

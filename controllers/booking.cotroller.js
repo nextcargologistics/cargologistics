@@ -44,23 +44,25 @@ const generateLrNumber = async (fromCity, location) => {
 };
 
 
-
-
 const createBooking = async (req, res) => {
   try {
     const { 
-      fromCity, toCity, pickUpBranch, dropBranch,location, dispatchType, bookingType,
+      fromCity, toCity, pickUpBranch, dropBranch, location, dispatchType, bookingType,
       quantity, packageType, senderName, senderMobile, senderAddress, unitPrice,
       receiverName, receiverMobile, receiverAddress, serviceCharge = 0, 
       hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0, valueOfGoods = 0,
-      bookingStatus, receiptNo, adminUniqueId, adminId
+      bookingStatus, receiptNo, adminUniqueId, adminId, items, eWayBillNo, 
+      ltCity = "", ltBranch = "", ltEmployee = "", deliveryEmployee = "",
+      cancelByUser = "", cancelDate = "", cancelCity = "", cancelBranch = "",
+      refundCharge = 0, refundAmount = 0
     } = req.body;
 
     // Required fields validation
     const requiredFields = [
-      "fromCity", "toCity", "pickUpBranch", "dropBranch","location", "dispatchType", "bookingType",
+      "fromCity", "toCity", "pickUpBranch", "dropBranch", "location", "dispatchType", "bookingType",
       "quantity", "packageType", "senderName", "senderMobile", "senderAddress", "unitPrice",
-      "receiverName", "receiverMobile", "receiverAddress", "adminUniqueId", "adminId"
+      "receiverName", "receiverMobile", "receiverAddress", "adminUniqueId", "adminId",
+      "items", "eWayBillNo"
     ];
 
     for (const field of requiredFields) {
@@ -69,9 +71,10 @@ const createBooking = async (req, res) => {
       }
     }
 
-    // ✅ FIX: Await the async function
+    // ✅ Generate GRN and LR numbers
     const grnNumber = await generateGrnNumber();
-    const lrNumber=await generateLrNumber(fromCity,location)
+    const lrNumber = await generateLrNumber(fromCity, location);
+
     // Generate receiptNo if not provided
     const generatedReceiptNo = receiptNo || `REC-${Date.now()}`;
 
@@ -106,6 +109,20 @@ const createBooking = async (req, res) => {
       bookingStatus,
       adminUniqueId,
       adminId,
+      items,
+      eWayBillNo,
+      bookingDate: new Date(),
+      ltDate: new Date(),
+      ltCity,
+      ltBranch,
+      ltEmployee,
+      deliveryEmployee,
+      cancelByUser,
+      cancelDate: cancelDate ? new Date(cancelDate) : "",
+      cancelCity,
+      cancelBranch,
+      refundCharge,
+      refundAmount
     });
 
     await booking.save();
@@ -115,7 +132,6 @@ const createBooking = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 const getAllBookings = async (req, res) => {
   try {
@@ -235,6 +251,26 @@ const getAllBookings = async (req, res) => {
       }
   }
 
+  const getBookinglrNumber = async (req, res) => {
+    try {
+      const { lrNumber } = req.params;
+      console.log("Received lrNumber:", lrNumber);
+  
+      const booking = await Booking.findOne({ lrNumber });
+      console.log("Booking Found:", booking);
+  
+      if (!booking) {
+        return res.status(404).json({ message: "No bookings found for this lrNumber!" });
+      }
+  
+      res.status(200).json(booking);
+    } catch (error) {
+      console.error("Error fetching booking:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+
   const deleteBookings=async(req,res) =>{
      try{
        const {id}=req.params
@@ -299,5 +335,6 @@ export default {createBooking,
   getBookingsreceiverName,
   getBookingadminUniqueId,
   getBookingPickUpBranch,
-  updateGRNBookings
+  updateGRNBookings,
+  getBookinglrNumber
 }

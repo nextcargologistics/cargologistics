@@ -21,6 +21,8 @@ router.get("/receiverName/:receiverName",bookingCotroller.getBookingsreceiverNam
 
 router.get("/pickUpBranch/:pickUpBranch",bookingCotroller.getBookingPickUpBranch)
 
+router.get("/lrNumber/:lrNumber",bookingCotroller.getBookinglrNumber)
+
 router.delete("/:id",bookingCotroller.deleteBookings)
 
 router.patch("/:id",bookingCotroller.updateBookings)
