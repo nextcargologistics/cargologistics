@@ -25,4 +25,6 @@ router.delete("/:id",bookingCotroller.deleteBookings)
 
 router.patch("/:id",bookingCotroller.updateBookings)
 
+router.patch("/grnNoUnique/:grnNoUnique",bookingCotroller.updateGRNBookings)
+
 export default router

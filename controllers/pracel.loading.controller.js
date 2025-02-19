@@ -1,5 +1,9 @@
 import ParcelLoading from "../models/pracel.loading.model.js";
 
+const generateVocherNoUnique=()=>{
+    return Math.floor(100000+Math.random()*900000)
+}
+
 // Create a new parcel
 const createParcel = async (req, res) => {
     try {
@@ -15,9 +19,10 @@ const createParcel = async (req, res) => {
             !remarks || !grnNo || !dropBranch) {
             return res.status(400).json({ message: "All fields are required" });
         }
+          const vocherNoUnique=generateVocherNoUnique()
 
         const parcel = new ParcelLoading({
-            branch, vehicleType, driverName, driverNo, 
+            vocherNoUnique, branch, vehicleType, driverName, driverNo, 
             fromBookingDate, toBookingDate, fromCity, toCity, 
             remarks, grnNo, dropBranch
         });
@@ -41,6 +46,22 @@ const getAllParcels = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Get a parcel vocherNoUnique
+
+const getParcelVocherNoUnique=async(req,res) => {
+    try{
+      const {vocherNoUnique}=req.params
+      const parcels=await ParcelLoading.findOne({vocherNoUnique})
+      if(!parcels){
+        return res.status(404).json({message:"data not found in parcels !"})
+      }
+      res.status(200).json(parcels)
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
+}
 
 // Get a parcel by ID
 const getParcelById = async (req, res) => {
@@ -126,5 +147,14 @@ const getParcelsByFilter = async (req, res) => {
         }
     };
     
-export default { createParcel, getParcelById, getAllParcels, updateParcel, deleteParcel,getParcelsByFilter,branchToBranchLoading };
+export default { createParcel,
+     getParcelById,
+      getAllParcels, 
+      getParcelVocherNoUnique,
+      updateParcel, 
+      deleteParcel,
+      getParcelsByFilter,
+      branchToBranchLoading 
+      
+    };
  
