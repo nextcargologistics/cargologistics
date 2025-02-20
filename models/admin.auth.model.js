@@ -14,7 +14,6 @@ const adminSchema = new mongoose.Schema(
     branchName: { type: String },
     location: { type: String },
     documents: { type: String },
-   
   },
   { timestamps: true }
 );
