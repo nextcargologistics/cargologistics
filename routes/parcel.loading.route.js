@@ -19,4 +19,10 @@ router.post("/offline-report",parcelController.getParcelsByFilter)
 
 router.post("/branch-to-branch",parcelController.branchToBranchLoading)
 
+router.post("/updateGrnNumbers",parcelController.updateAllGrnNumbers)
+
+router.post("/get-lrNumber",parcelController.getParcelByLrNumber)
+
+router.get("/vehicalNumber/:vehicalNumber",parcelController.getParcelByVehicalNumber)
+
 export default router

@@ -253,7 +253,7 @@ const getAllBookings = async (req, res) => {
 
   const getBookinglrNumber = async (req, res) => {
     try {
-      const { lrNumber } = req.params;
+      const { lrNumber } = req.body;
       console.log("Received lrNumber:", lrNumber);
   
       const booking = await Booking.findOne({ lrNumber });
@@ -324,6 +324,46 @@ const getAllBookings = async (req, res) => {
     }
   };
   
+  const updateAllGrnNumbers = async (req, res) => {
+    try {
+        const { grnNumbers, updateFields } = req.body;
+
+        if (!grnNumbers || !Array.isArray(grnNumbers) || grnNumbers.length === 0) {
+            return res.status(400).json({ message: "Invalid or missing grnNumbers array" });
+        }
+
+        if (!updateFields || typeof updateFields !== "object" || Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ message: "Invalid or missing updateFields object" });
+        }
+
+        // Add `updatedAt` field to the update object
+        updateFields.updatedAt = new Date();
+
+        // Find all bookings before update
+        const beforeUpdate = await Booking.find({ grnNumber: { $in: grnNumbers } });
+
+        // Update all records matching grnNumbers with dynamic fields
+        const updateResult = await Booking.updateMany(
+            { grnNumber: { $in: grnNumbers } },
+            { $set: updateFields }
+        );
+
+        // Fetch all updated records
+        const afterUpdate = await Booking.find({ grnNumber: { $in: grnNumbers } });
+
+        return res.status(200).json({
+            message: `Successfully updated ${updateResult.modifiedCount} records`,
+            beforeUpdate,
+            afterUpdate
+        });
+
+    } catch (error) {
+        console.error("Error updating GRN numbers:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+  
+
 export default {createBooking,
   getAllBookings,
   getBookingByGrnNo,
@@ -336,5 +376,6 @@ export default {createBooking,
   getBookingadminUniqueId,
   getBookingPickUpBranch,
   updateGRNBookings,
-  getBookinglrNumber
+  getBookinglrNumber,
+  updateAllGrnNumbers
 }

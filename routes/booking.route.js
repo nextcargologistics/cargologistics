@@ -21,12 +21,14 @@ router.get("/receiverName/:receiverName",bookingCotroller.getBookingsreceiverNam
 
 router.get("/pickUpBranch/:pickUpBranch",bookingCotroller.getBookingPickUpBranch)
 
-router.get("/lrNumber/:lrNumber",bookingCotroller.getBookinglrNumber)
+router.post("/get-lrNumber",bookingCotroller.getBookinglrNumber)
 
 router.delete("/:id",bookingCotroller.deleteBookings)
 
 router.patch("/:id",bookingCotroller.updateBookings)
 
 router.patch("/grnNoUnique/:grnNoUnique",bookingCotroller.updateGRNBookings)
+
+router.post("/updateAllGrnNumbers",bookingCotroller.updateAllGrnNumbers)
 
 export default router

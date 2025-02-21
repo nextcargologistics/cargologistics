@@ -1,40 +1,54 @@
 import ParcelLoading from "../models/pracel.loading.model.js";
+import Booking from '../models/booking.model.js'
 
 const generateVocherNoUnique=()=>{
     return Math.floor(100000+Math.random()*900000)
 }
 
-// Create a new parcel
 const createParcel = async (req, res) => {
     try {
-        const { 
-            branch, vehicleType, driverName, driverNo, 
-            fromBookingDate, toBookingDate, fromCity, toCity, 
-            remarks, grnNo, dropBranch 
+        const {
+            parcelType, fromBranch, toBranch, unloadBranch, vehicalType, vehicalNumber,
+            driverName, driverNo, fromBookingDate, toBookingDate,
+            fromCity, toCity, remarks, grnNo, lrNumber
         } = req.body;
 
-        // Validate required fields
-        if (!branch || !vehicleType || !driverName || !driverNo || 
-            !fromBookingDate || !toBookingDate || !fromCity || !toCity || 
-            !remarks || !grnNo || !dropBranch) {
-            return res.status(400).json({ message: "All fields are required" });
+        if (!parcelType || !fromBranch || !toBranch || !vehicalType || !vehicalNumber || !driverName || !driverNo ||
+            !fromBookingDate || !toBookingDate || !fromCity || !toCity || !remarks ||
+            !Array.isArray(grnNo) || grnNo.length === 0 || !Array.isArray(lrNumber) || lrNumber.length === 0) {
+            return res.status(400).json({ message: "All required fields must be provided" });
         }
-          const vocherNoUnique=generateVocherNoUnique()
+
+        const vocherNoUnique = generateVocherNoUnique();
 
         const parcel = new ParcelLoading({
-            vocherNoUnique, branch, vehicleType, driverName, driverNo, 
-            fromBookingDate, toBookingDate, fromCity, toCity, 
-            remarks, grnNo, dropBranch
+            parcelType,
+            vehicalNumber,
+            vocherNoUnique,
+            fromBranch,
+            toBranch,
+            unloadBranch: unloadBranch || "",
+            vehicalType,
+            driverName,
+            driverNo,
+            fromBookingDate,
+            toBookingDate,
+            fromCity,
+            toCity,
+            remarks,
+            grnNo,
+            lrNumber
         });
 
         await parcel.save();
-        res.status(201).json(parcel);
+        res.status(201).json({ message: "Parcel created successfully", parcel });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error creating parcel:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
-};
+};  
 
-// Get all parcels
+
 const getAllParcels = async (req, res) => {
     try {
         const parcels = await ParcelLoading.find()
@@ -47,7 +61,6 @@ const getAllParcels = async (req, res) => {
     }
 };
 
-// Get a parcel vocherNoUnique
 
 const getParcelVocherNoUnique=async(req,res) => {
     try{
@@ -63,7 +76,6 @@ const getParcelVocherNoUnique=async(req,res) => {
     }
 }
 
-// Get a parcel by ID
 const getParcelById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -77,7 +89,7 @@ const getParcelById = async (req, res) => {
     }
 };
 
-// Update a parcel
+
 const updateParcel = async (req, res) => {
     try {
         const { id } = req.params;
@@ -91,7 +103,7 @@ const updateParcel = async (req, res) => {
     }
 };
 
-// Delete a parcel
+
 const deleteParcel = async (req, res) => {
     try {
         const { id } = req.params;
@@ -145,7 +157,83 @@ const getParcelsByFilter = async (req, res) => {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    };
+};
+
+ const updateAllGrnNumbers = async (req, res) => {
+    try {
+        const { grnNumbers, updateFields } = req.body;
+
+        if (!grnNumbers || !Array.isArray(grnNumbers) || grnNumbers.length === 0) {
+            return res.status(400).json({ message: "Invalid or missing grnNumbers array" });
+        }
+
+        if (!updateFields || typeof updateFields !== "object" || Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ message: "Invalid or missing updateFields object" });
+        }
+
+        // Add `updatedAt` field to the update object
+        updateFields.updatedAt = new Date();
+
+        // Find all bookings before update
+        const beforeUpdate = await Booking.find({ grnNumber: { $in: grnNumbers } });
+
+        // Update all records matching grnNumbers with dynamic fields
+        const updateResult = await Booking.updateMany(
+            { grnNumber: { $in: grnNumbers } },
+            { $set: updateFields }
+        );
+
+        // Fetch all updated records
+        const afterUpdate = await Booking.find({ grnNumber: { $in: grnNumbers } });
+
+        return res.status(200).json({
+            message: `Successfully updated ${updateResult.modifiedCount} records`,
+            beforeUpdate,
+            afterUpdate
+        });
+
+    } catch (error) {
+        console.error("Error updating GRN numbers:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+ const getParcelByLrNumber = async (req, res) => {
+    try {
+        const { lrNumber } = req.body;
+
+        if (!lrNumber) {
+            return res.status(400).json({ message: "lrNumber is required" });
+        }
+
+        const parcel = await ParcelLoading.find({ lrNumber: { $in: [lrNumber] } })
+            .populate("bookingId",'')  
+            
+            .populate("vehicalId","vehicleNo vehicleType"); 
+
+        if (!parcel) {
+            return res.status(404).json({ message: "Parcel not found" });
+        }
+
+        res.status(200).json(parcel);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+const getParcelByVehicalNumber = async (req, res) => {
+    try {
+        const { vehicalNumber } = req.params;
+
+        const parcel = await ParcelLoading.find({vehicalNumber})
+
+        res.status(200).json(parcel);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
     
 export default { createParcel,
      getParcelById,
@@ -154,7 +242,9 @@ export default { createParcel,
       updateParcel, 
       deleteParcel,
       getParcelsByFilter,
-      branchToBranchLoading 
-      
+      branchToBranchLoading ,
+      updateAllGrnNumbers,
+      getParcelByLrNumber,
+      getParcelByVehicalNumber
     };
  

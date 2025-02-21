@@ -12,4 +12,4 @@ const vehicleSchema = new mongoose.Schema({
     vehicleStatus:{type:String,enum:['active','inactive'],default:"active",required:true}
 }, { timestamps: true });
 
-export default mongoose.model("Vehicle", vehicleSchema);
+export default mongoose.model("Vehical", vehicleSchema);
