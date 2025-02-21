@@ -11,7 +11,7 @@ const bookingSchema = new mongoose.Schema(
     pickUpBranch: { type: String, required: true },
     dropBranch: { type: String, required: true },
     location: { type: String, required: true },
-    dispatchType: { type: String, enum: ["Regular", "Express"], required: true }, 
+    dispatchType: { type: String, required: true }, 
     bookingType: { type: String, required: true },
     quantity: { type: Number, required: true },
     packageType: { type: String, required: true }, 
