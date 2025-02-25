@@ -8,7 +8,7 @@ const generateVocherNoUnique=()=>{
 const createParcel = async (req, res) => {
     try {
         const {
-            parcelType, fromBranch, toBranch, unloadBranch, vehicalType, vehicalNumber,
+            parcelType, fromBranch, toBranch,parcelStatus, unloadBranch, vehicalType, vehicalNumber,
             driverName, driverNo, fromBookingDate, toBookingDate,
             fromCity, toCity, remarks, grnNo, lrNumber
         } = req.body;
@@ -24,6 +24,7 @@ const createParcel = async (req, res) => {
         const parcel = new ParcelLoading({
             parcelType,
             vehicalNumber,
+            parcelStatus,
             vocherNoUnique,
             fromBranch,
             toBranch,
@@ -234,6 +235,56 @@ const getParcelByVehicalNumber = async (req, res) => {
     }
 };
 
+
+ const getParcelsByBranch = async (req, res) => {
+    try {
+        const { fromBranch, toBranch } = req.params
+
+        if (!fromBranch || !toBranch) {
+            return res.status(400).json({ message: "Both fromBranch and toBranch are required." });
+        }
+
+        // Find parcels matching fromBranch and toBranch
+        const parcels = await ParcelLoading.find({ fromBranch, toBranch });
+
+        if (!parcels.length) {
+            return res.status(404).json({ message: "No parcels found for the given branches." });
+        }
+
+        res.status(200).json(parcels);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+const getParcelLoadingBetweenDates = async (req, res) => {
+    try {
+      const { fromBookingDate, toBookingDate } = req.body;
+  
+      if (!fromBookingDate || !toBookingDate) {
+        return res.status(400).json({ message: "fromBookingDate and toBookingDate are required!" });
+      }
+      const parcels = await ParcelLoading.find({
+        $or: [
+          { bookingDate: fromBookingDate },
+          { bookingDate: toBookingDate }
+        ]
+      });
+
+      if (!parcels.length) {
+        return res.status(404).json({ message: "No parcels found!" });
+      }
+     
+      if (parcels.length === 0) {
+        return res.status(404).json({ message: "No Parcel dates found in the given date range!" });
+      }
+  
+      res.status(200).json(parcels);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
     
 export default { createParcel,
      getParcelById,
@@ -245,6 +296,8 @@ export default { createParcel,
       branchToBranchLoading ,
       updateAllGrnNumbers,
       getParcelByLrNumber,
-      getParcelByVehicalNumber
+      getParcelByVehicalNumber,
+      getParcelsByBranch,
+      getParcelLoadingBetweenDates
     };
  

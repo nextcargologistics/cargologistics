@@ -9,6 +9,7 @@ const parcelSchema = new mongoose.Schema({
     vehicalType: { type:String, required: true }, 
     vehicalNumber:{type:String,required:true},
     driverName: { type: String, required: true },
+    parcelStatus:{type:Number,default:0},
     driverNo: { type: String, required: true }, 
     fromBookingDate: { type: Date, required: true },
     toBookingDate: { type: Date, required: true },

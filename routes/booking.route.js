@@ -1,7 +1,7 @@
 import express from 'express'
 import bookingCotroller from '../controllers/booking.cotroller.js'
 
-const router=express.Router()
+const router=express.Router()  
 
 router.post("/",bookingCotroller.createBooking)
 
@@ -20,6 +20,12 @@ router.get("/senderName/:senderName",bookingCotroller.getBookingsenderName)
 router.get("/receiverName/:receiverName",bookingCotroller.getBookingsreceiverName)
 
 router.get("/pickUpBranch/:pickUpBranch",bookingCotroller.getBookingPickUpBranch)
+
+router.get("/gst/:senderGst?/:receiverGst?/:parcelGst?", bookingCotroller.getBookingsByGstParams);
+
+router.get("/fromCity/:fromCity/toCity/:toCity/vehicalNumber/:vehicalNumber",bookingCotroller.getBookingsfromCityTotoCity)
+
+router.post("/startDate/endDate" ,bookingCotroller.getBookingsBetweenDates);
 
 router.post("/get-lrNumber",bookingCotroller.getBookinglrNumber)
 

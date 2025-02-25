@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+  
 const bookingSchema = new mongoose.Schema(
   {  
     grnNumber: { type: Number, required: true, unique: true }, 
@@ -16,6 +16,7 @@ const bookingSchema = new mongoose.Schema(
     quantity: { type: Number, required: true },
     packageType: { type: String, required: true }, 
     contains: { type: Number, default: 0 },
+    vehicalNumber:{type:String,required:true},
     weight: { type: Number },
     actualWeight: { type: Number, default: 0 },
     unitPrice: { type: Number, required: true },
@@ -52,7 +53,7 @@ const bookingSchema = new mongoose.Schema(
     bookingStatus: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
 
     items: { type: Number, required: true },
-
+    
     bookingDate: { type: Date, default: () => new Date() },
     ltDate: { type: Date, default: () => new Date() },
     ltCity: { type: String, default: "" }, // FIXED: Changed from Date to String

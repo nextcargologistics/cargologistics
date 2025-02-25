@@ -1,6 +1,6 @@
 import Booking from "../models/booking.model.js";
 import moment from "moment";
-
+ 
 const generateGrnNumber = async () => {
   const lastBooking = await Booking.findOne().sort({ createdAt: -1 });
   return lastBooking ? lastBooking.grnNumber + 1 : 1000; // Always increment globally
@@ -48,7 +48,7 @@ const createBooking = async (req, res) => {
   try {
     const { 
       fromCity, toCity, pickUpBranch, dropBranch, location, dispatchType, bookingType,
-      quantity, packageType, senderName, senderMobile, senderAddress, unitPrice,
+      quantity, packageType,contains,vehicalNumber, senderName, senderMobile, senderAddress, unitPrice,
       receiverName, receiverMobile, receiverAddress, serviceCharge = 0, 
       hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0, valueOfGoods = 0,
       bookingStatus, receiptNo, adminUniqueId, adminId, items, eWayBillNo, 
@@ -60,7 +60,7 @@ const createBooking = async (req, res) => {
     // Required fields validation
     const requiredFields = [
       "fromCity", "toCity", "pickUpBranch", "dropBranch", "location", "dispatchType", "bookingType",
-      "quantity", "packageType", "senderName", "senderMobile", "senderAddress", "unitPrice",
+      "quantity", "packageType","vehicalNumber" , "senderName", "senderMobile", "senderAddress", "unitPrice",
       "receiverName", "receiverMobile", "receiverAddress", "adminUniqueId", "adminId",
       "items", "eWayBillNo"
     ];
@@ -88,6 +88,8 @@ const createBooking = async (req, res) => {
       pickUpBranch,
       dropBranch,
       dispatchType,
+      contains,
+      vehicalNumber,
       bookingType,
       quantity,
       packageType,
@@ -270,7 +272,6 @@ const getAllBookings = async (req, res) => {
     }
   };
   
-
   const deleteBookings=async(req,res) =>{
      try{
        const {id}=req.params
@@ -362,7 +363,91 @@ const getAllBookings = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
-  
+
+const getBookingsByGstParams = async (req, res) => {
+  try {
+      const { senderGst, receiverGst, parcelGst } = req.params;
+
+      // Build dynamic query based on available parameters
+      let query = {};
+      if (senderGst) query.senderGst = senderGst;
+      if (receiverGst) query.receiverGst = receiverGst;
+      if (parcelGst) query.parcelGst = parcelGst;
+
+      // Ensure at least one GST parameter is provided
+      if (Object.keys(query).length === 0) {
+          return res.status(400).json({ success: false, message: "At least one GST parameter (senderGst, receiverGst, or parcelGst) is required" });
+      }
+
+      // Fetch matching bookings
+      const bookings = await Booking.find(query);
+
+      if (bookings.length === 0) {
+          return res.status(404).json({ success: false, message: "No bookings found for the given GST details" });
+      }
+
+      res.status(200).json({ success: true, data: bookings });
+  } catch (error) {
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+const getBookingsfromCityTotoCity=async(req,res) => {
+  try{
+   const {fromCity,toCity,vehicalNumber}=req.params
+
+   if(!fromCity || !toCity || !vehicalNumber){
+    return res.status(400).json({message:"Required fields are missing !"})
+   }
+   const booking=await Booking.find({fromCity,toCity,vehicalNumber})
+   if(!booking){
+    return res.status(404).json({message:"bookings not found !"})
+   }
+   res.status(200).json(booking)
+  }
+  catch(error){
+  res.status(500).json({error:error.message})
+  }
+}
+
+const getBookingsBetweenDates = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ message: "Start date and end date are required!" });
+    }
+
+    // Convert startDate and endDate to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Validate date conversion
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({ message: "Invalid date format!" });
+    }
+
+    // Ensure endDate includes the entire day (set time to 23:59:59)
+    end.setHours(23, 59, 59, 999);
+
+    // Find bookings where bookingDate is between startDate and endDate
+    const bookings = await Booking.find({
+      bookingDate: {
+        $gte: start, // Greater than or equal to startDate
+        $lte: end,   // Less than or equal to endDate (full day included)
+      },
+    });
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found in the given date range!" });
+    }
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 export default {createBooking,
   getAllBookings,
@@ -377,5 +462,8 @@ export default {createBooking,
   getBookingPickUpBranch,
   updateGRNBookings,
   getBookinglrNumber,
-  updateAllGrnNumbers
+  updateAllGrnNumbers,
+  getBookingsByGstParams,
+  getBookingsfromCityTotoCity,
+  getBookingsBetweenDates
 }

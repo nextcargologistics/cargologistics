@@ -12,7 +12,9 @@ const branchSchema = new mongoose.Schema({
     state: { type: String, required: true },   
     country: { type: String, required: true },  
     alternateMobile: { type: String }, 
-    status: { type: Boolean, required: true, default: false } 
+    branchDate: { type: Date, default: () => new Date() },
+
+    branchStatus: { type:Number, default: 0 } 
 });
 
 export default mongoose.model("Branch", branchSchema);

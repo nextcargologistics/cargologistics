@@ -15,6 +15,8 @@ const createBranch = async (req, res) => {
       adminId,
       name,
       city,
+      branchDate,
+      branchStatus,
       address,
       phone,
       email,
@@ -48,6 +50,8 @@ const createBranch = async (req, res) => {
       adminId,
       name,
       city,
+      branchDate,
+      branchStatus,
       address,
       phone,
       email,
@@ -123,6 +127,8 @@ const updateBranch = async (req, res) => {
       employeeId,
       name,
       city,
+      branchDate,
+      branchStatus,
       address,
       phone,
       email,
@@ -141,6 +147,8 @@ const updateBranch = async (req, res) => {
         employeeId,
         name,
         city,
+        branchDate,
+        branchStatus,
         address,
         phone,
         email,
@@ -171,6 +179,43 @@ const updateBranch = async (req, res) => {
   }
 };
 
+const getBranchByDateRange = async (req, res) => {
+  try {
+      const { startDate, endDate } = req.body;
+
+      // Validate required fields
+      if (!startDate || !endDate) {
+          return res.status(400).json({ success: false, message: "Start date and end date are required" });
+      }
+
+      // Convert to Date objects
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      // Validate date conversion
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          return res.status(400).json({ success: false, message: "Invalid date format" });
+      }
+
+      // Ensure end date includes the full day
+      end.setHours(23, 59, 59, 999);
+
+      // Query branches within date range
+      const branches = await Branch.find({
+          branchDate: { $gte: start, $lte: end } // Ensure correct field name
+      });
+
+      if (branches.length === 0) {
+          return res.status(404).json({ success: false, message: "No branches found in this date range" });
+      }
+
+      res.status(200).json({ success: true, data: branches });
+  } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
 // Delete Branch
 const deleteBranch = async (req, res) => {
   try {
@@ -198,4 +243,6 @@ export default {
   getbranchId,
   updateBranch,
   deleteBranch,
+  getBranchByDateRange
+
 };

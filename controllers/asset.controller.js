@@ -4,6 +4,10 @@ import { Asset } from '../models/multi.model.js'
  const createAsset = async (req, res) => {
     try {
         const { name, value, assetType, purchaseDate } = req.body;
+
+        if( !name || !value  || !assetType || !purchaseDate ){
+            return res.status(400).json({message:"Required fields is missing !"})
+        }
         const newAsset = new Asset({ name, value, assetType, purchaseDate });
         await newAsset.save();
         res.status(201).json({message: "Asset added", asset: newAsset });
@@ -15,6 +19,22 @@ import { Asset } from '../models/multi.model.js'
  const getAssets = async (req, res) => {
     try {
         const assets = await Asset.find();
+        res.status(200).json(assets);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+const getByAssetTypes = async (req, res) => {
+    try {
+        const {assetType}=req.params
+
+        const assets = await Asset.find({assetType})
+
+        if (!assets.length) {
+            return res.status(404).json({message: "No asset types found" });
+        }
+
         res.status(200).json(assets);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -42,4 +62,5 @@ import { Asset } from '../models/multi.model.js'
         res.status(500).json({ success: false, message: error.message });
     }
 };
-export default {createAsset,getAssets,deleteAsset,updateAsset}
+
+export default {createAsset,getAssets,getByAssetTypes,deleteAsset,updateAsset}

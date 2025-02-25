@@ -23,10 +23,12 @@ const assetSchema = new mongoose.Schema({
 const expenditureSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     expenditureType: { type: String, required: true, trim: true },
-    value: { type: Number, required: true }, // Changed to Number
+    value: { type: Number, required: true }, 
+    expenditureStatus:{type:Number,default:0},
     date: { type: Date, required: true },
+    expenditureDate:{type:Date,required:true,default:()=>new Date()},
     remarks: { type: String, trim: true }
-}, { timestamps: true });
+}, { timestamps: true });  
 
 export const City = mongoose.model("City", citySchema);
 export const DispatchType = mongoose.model("DispatchType", dispatchTypeSchema);

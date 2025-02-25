@@ -25,4 +25,8 @@ router.post("/get-lrNumber",parcelController.getParcelByLrNumber)
 
 router.get("/vehicalNumber/:vehicalNumber",parcelController.getParcelByVehicalNumber)
 
+router.get("/fromBranch/toBranch/:fromBranch/:toBranch", parcelController.getParcelsByBranch);
+
+router.post("/fromBookingDate/toBookingDate",parcelController.getParcelLoadingBetweenDates)
+
 export default router
