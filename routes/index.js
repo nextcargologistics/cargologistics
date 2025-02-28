@@ -17,5 +17,4 @@ app.use("/vehicle",vehicleRouter)
 app.use("/parcel-loading",parcelLoadingRouter)
 app.use("/multi-router",multiRouter)
 
-
 export default app

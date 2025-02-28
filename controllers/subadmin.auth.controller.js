@@ -1,8 +1,86 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Subadmin from '../models/subadmin.auth.model.js';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const generateSubadminUniqueId = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+const transport = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD, 
+  },  
+  tls: { rejectUnauthorized: false },  
+});
+
+
+  console.log(process.env.EMAIL_USER)
+  console.log(process.env.EMAIL_PASSWORD)
+
+const sendForgotPasswordOTP = async (email, otp) => {
+  try {
+    await transport.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Forgot Password OTP",
+      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+    });
+    console.log("OTP sent successfully");
+  } catch (error) {
+    console.log("Error sending OTP:", error);
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const subadmin = await Subadmin.findOne({ email });
+    if (!subadmin) {
+      return res.status(404).json({ message: "Subadmin not found" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    subadmin.resetOTP = otp;
+    subadmin.otpExpires = Date.now() + 5 * 60 * 1000;
+    await subadmin.save();
+
+    await sendForgotPasswordOTP(email, otp);
+    res.status(200).json({ message: "OTP sent successfully",otp });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const subadmin = await Subadmin.findOne({ email });
+    if (!subadmin || subadmin.resetOTP !== otp || Date.now() > subadmin.otpExpires) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    subadmin.password = await bcrypt.hash(newPassword, 10);
+    subadmin.resetOTP = null;
+    subadmin.otpExpires = null;
+    await subadmin.save();
+  
+    res.status(200).json({ message: "Password reset successfully"});
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
 
 const signup = async (req, res) => {
   try {
@@ -132,7 +210,10 @@ const deleteSubadmin = async (req, res) => {
 export default {
   signup,
   login,
+  forgotPassword,
+  resetPassword,
   changeSubadminPassword,
   getAllSubadmins,
   deleteSubadmin,
 };
+ 
