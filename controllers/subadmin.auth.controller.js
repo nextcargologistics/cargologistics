@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Subadmin from '../models/subadmin.auth.model.js';
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+import dotenv from "dotenv"; 
 
 dotenv.config();
 
@@ -16,18 +16,18 @@ const transport = nodemailer.createTransport({
   },  
   tls: { rejectUnauthorized: false },  
 });
-
+  
 
   console.log(process.env.EMAIL_USER)
   console.log(process.env.EMAIL_PASSWORD)
 
-const sendForgotPasswordOTP = async (email, otp) => {
+const sendForgotPasswordOTP = async (email, otp) => {   
   try {
     await transport.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Forgot Password OTP",
-      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,  
     });
     console.log("OTP sent successfully");
   } catch (error) {
