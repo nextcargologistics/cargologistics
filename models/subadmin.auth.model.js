@@ -12,7 +12,7 @@ const adminSchema = new mongoose.Schema(
     phone: { type: String},   
     branchId: { type: String }, 
     branchName: { type: String },  
-    location: { type: String },
+    location: { type: String },  
     documents: { type: String },
   },
   { timestamps: true }

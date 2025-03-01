@@ -12,8 +12,9 @@ const generateUniqueId = (city, name) => {
 const createBranch = async (req, res) => {
   try {
     const {
-      adminId,
+      createdBy,
       name,
+      branchType,
       city,
       branchDate,
       branchStatus,
@@ -27,9 +28,11 @@ const createBranch = async (req, res) => {
       status,
     } = req.body;
 
+    
     if (
-      !adminId ||
+      !createdBy ||
       !name ||
+      !branchType ||
       !city ||
       !address ||
       !phone ||
@@ -47,8 +50,9 @@ const createBranch = async (req, res) => {
 
     const newBranch = new Branch({
       branchUniqueId,
-      adminId,
+      createdBy,
       name,
+      branchType,
       city,
       branchDate,
       branchStatus,
@@ -123,9 +127,10 @@ const updateBranch = async (req, res) => {
     const { id } = req.params;
     const {
       branchUniqueId,
-      adminId,
+      createdBy,
       employeeId,
       name,
+      branchType,
       city,
       branchDate,
       branchStatus,
@@ -143,9 +148,10 @@ const updateBranch = async (req, res) => {
       id,
       {
         branchUniqueId,
-        adminId,
+        createdBy,
         employeeId,
         name,
+        branchType,
         city,
         branchDate,
         branchStatus,
@@ -189,7 +195,7 @@ const getBranchByDateRange = async (req, res) => {
       }
 
       // Convert to Date objects
-      const start = new Date(startDate);
+      const start = new Date(startDate);  
       const end = new Date(endDate);
 
       // Validate date conversion

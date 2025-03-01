@@ -9,14 +9,14 @@ dotenv.config();
 const generateSubadminUniqueId = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 const transport = nodemailer.createTransport({
-  service: "Gmail",
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD, 
-  },  
-  tls: { rejectUnauthorized: false },  
+  },
+  tls: { rejectUnauthorized: false }, 
 });
-  
+ 
 
   console.log(process.env.EMAIL_USER)
   console.log(process.env.EMAIL_PASSWORD)
@@ -31,7 +31,7 @@ const sendForgotPasswordOTP = async (email, otp) => {
     });
     console.log("OTP sent successfully");
   } catch (error) {
-    console.log("Error sending OTP:", error);
+    console.log("Error sending OTP:", error);  
   }
 };
 
@@ -42,7 +42,7 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const subadmin = await Subadmin.findOne({ email });
+    const subadmin = await Subadmin.findOne({ email });    z
     if (!subadmin) {
       return res.status(404).json({ message: "Subadmin not found" });
     }
@@ -73,7 +73,7 @@ const resetPassword = async (req, res) => {
 
     subadmin.password = await bcrypt.hash(newPassword, 10);
     subadmin.resetOTP = null;
-    subadmin.otpExpires = null;
+    subadmin.otpExpires = null; 
     await subadmin.save();
   
     res.status(200).json({ message: "Password reset successfully"});
@@ -117,7 +117,7 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { identifier, password } = req.body; // identifier can be email or phone
+    const { identifier, password } = req.body; 
 
     if (!identifier || !password) {
       return res.status(400).json({ message: "Email/Phone and password are required" });

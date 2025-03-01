@@ -54,7 +54,7 @@ const createBooking = async (req, res) => {
       bookingStatus, receiptNo, adminUniqueId, adminId, items, eWayBillNo, 
       ltCity = "", ltBranch = "", ltEmployee = "", deliveryEmployee = "",
       cancelByUser = "", cancelDate = "", cancelCity = "", cancelBranch = "",
-      refundCharge = 0, refundAmount = 0
+      refundCharge = 0, refundAmount = 0,senderGst,receiverGst,parcelGst
     } = req.body;
 
     // Required fields validation
@@ -124,7 +124,10 @@ const createBooking = async (req, res) => {
       cancelCity,
       cancelBranch,
       refundCharge,
-      refundAmount
+      refundAmount,
+      senderGst,
+      receiverGst,
+      parcelGst
     });
 
     await booking.save();
@@ -149,13 +152,13 @@ const getAllBookings = async (req, res) => {
 
   const getBookingByGrnNo = async (req, res) => {
     try {
-      const { grnNoUnique } = req.params;
+      const { grnNumber } = req.params;
   
-      if (!grnNoUnique) {
-        return res.status(400).json({ success: false, message: "grnNoUnique is required" });
+      if (!grnNumber) {
+        return res.status(400).json({ success: false, message: "grnNumber is required" });
       }
   
-      const booking = await Booking.findOne({ grnNoUnique });
+      const booking = await Booking.findOne({ grnNumber });
   
       if (!booking) {
         return res.status(404).json({ success: false, message: "Booking not found" });
@@ -414,7 +417,7 @@ const getBookingsBetweenDates = async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
 
-    if (!startDate || !endDate) {
+    if (!startDate || !endDate) {  
       return res.status(400).json({ message: "Start date and end date are required!" });
     }
 

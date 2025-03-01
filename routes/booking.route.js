@@ -7,7 +7,7 @@ router.post("/",bookingCotroller.createBooking)
 
 router.get("/",bookingCotroller.getAllBookings)
 
-router.get("/grnNoUnique/:grnNoUnique",bookingCotroller.getBookingByGrnNo)
+router.get("/grnNumber/:grnNumber",bookingCotroller.getBookingByGrnNo)
 
 router.get("/adminUniqueId/:adminUniqueId",bookingCotroller.getBookingadminUniqueId)
 

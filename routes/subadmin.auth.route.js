@@ -13,7 +13,7 @@ router.post("/reset-password",subAdminAuthController.resetPassword)
 
 router.post("/forgot-password",subAdminAuthController.forgotPassword)
 
-router.get("/admins",subAdminAuthController.getAllSubadmins)
+router.get("/get-subadmins",subAdminAuthController.getAllSubadmins)
 
 router.delete("/:id",subAdminAuthController.deleteSubadmin)
 

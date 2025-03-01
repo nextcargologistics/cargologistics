@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 const branchSchema = new mongoose.Schema({
-    branchUniqueId:{type:String,required:true},
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true },
+    branchUniqueId:{type:String,required:true},  
+    createdBy: { type:String,required: true },
+    branchType:{type:String,required:true},
     name:{type:String,required:true},
     city:{type:String,required:true},
     address:{type:String,required:true},
@@ -12,7 +13,7 @@ const branchSchema = new mongoose.Schema({
     state: { type: String, required: true },   
     country: { type: String, required: true },  
     alternateMobile: { type: String }, 
-    branchDate: { type: Date, default: () => new Date() },
+    branchDate: { type: Date, default: () => new Date() }, 
 
     branchStatus: { type:Number, default: 0 } 
 });

@@ -32,7 +32,7 @@ const bookingSchema = new mongoose.Schema(
       validate: { validator: (v) => /^\d{10}$/.test(v), message: "Invalid mobile number" }
     },
     senderAddress: { type: String, required: true },
-    senderGst: { type: String },
+    senderGst: { type: String,default:"" },  
 
     receiverName: { type: String, required: true },
     receiverMobile: { 
@@ -41,9 +41,9 @@ const bookingSchema = new mongoose.Schema(
       validate: { validator: (v) => /^\d{10}$/.test(v), message: "Invalid mobile number" }
     },
     receiverAddress: { type: String, required: true },
-    receiverGst: { type: String },
+    receiverGst: { type: String,default:"" },
 
-    parcelGst: { type: String },
+    parcelGst: { type: String ,default:""},
     grandTotal: { type: Number, default: 0 },
     serviceCharge: { type: Number, default: 0 },
     hamaliCharge: { type: Number, default: 0 },
