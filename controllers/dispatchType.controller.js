@@ -1,11 +1,10 @@
 import { DispatchType } from '../models/multi.model.js';
 
-// Create a Dispatch Type
  const createDispatchType = async (req, res) => {
     try {
         const { name } = req.body;
 
-        // Check if required fields are provided
+       
         if (!name) {
             return res.status(400).json({message: "Name is required" });
         }

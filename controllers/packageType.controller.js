@@ -4,7 +4,7 @@ const createPackageType = async (req, res) => {
     try {
         const { name } = req.body;
 
-        // Check if required field is missing
+      
         if (!name) {
             return res.status(400).json({ success: false, message: "Name is required" });
         }
