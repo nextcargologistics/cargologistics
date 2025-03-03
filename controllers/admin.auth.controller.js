@@ -1,5 +1,5 @@
 import Admin from '../models/admin.auth.model.js'
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 const generateAdminUniqueId=()=>{
@@ -95,13 +95,13 @@ const changePassword = async (req, res) => {
     }
 
     // Compare old password with stored hashed password
-    const isMatch = await bcryptjs.compare(oldPassword, admin.password);
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Old password is incorrect!" });
     }
 
     // Hash new password
-    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password in database
     admin.password = hashedPassword;
