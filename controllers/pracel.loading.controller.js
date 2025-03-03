@@ -8,7 +8,7 @@ const generateVocherNoUnique=()=>{
 const createParcel = async (req, res) => {
     try {
         const {
-            parcelType, fromBranch, toBranch,parcelStatus, unloadBranch, vehicalType, vehicalNumber,
+            parcelType, fromBranch, toBranch,parcelStatus,userName, unloadBranch, vehicalType, vehicalNumber,
             driverName, driverNo, fromBookingDate, toBookingDate,
             fromCity, toCity, remarks, grnNo, lrNumber
         } = req.body;
@@ -25,6 +25,7 @@ const createParcel = async (req, res) => {
             parcelType,
             vehicalNumber,
             parcelStatus,
+            userName,
             vocherNoUnique,
             fromBranch,
             toBranch,
@@ -61,6 +62,30 @@ const getAllParcels = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+  const getParcelLoadingDates = async (req, res) => {
+    try {
+      const { fromBookingDate, toBookingDate, userName } = req.body;
+  
+      // Validate required fields
+      if (!fromBookingDate || !toBookingDate || !userName) {
+        return res.status(400).json({ success: false, message: "All fields are required" });
+      }
+  
+      // Find bookings that exactly match the provided data
+      const bookings = await ParcelLoading.find({
+        fromBookingDate: new Date(fromBookingDate),
+        toBookingDate: new Date(toBookingDate),
+        userName
+      });
+  
+      res.status(200).json({ success: true, bookings });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+  };
+  
 
 
 const getParcelVocherNoUnique=async(req,res) => {
@@ -265,11 +290,9 @@ const getParcelLoadingBetweenDates = async (req, res) => {
         return res.status(400).json({ message: "fromBookingDate and toBookingDate are required!" });
       }
       const parcels = await ParcelLoading.find({
-        $or: [
-          { bookingDate: fromBookingDate },
-          { bookingDate: toBookingDate }
-        ]
-      });
+        fromBookingDate: new Date(fromBookingDate),
+        toBookingDate: new Date(toBookingDate),
+      }); 
 
       if (!parcels.length) {
         return res.status(404).json({ message: "No parcels found!" });
@@ -289,6 +312,7 @@ const getParcelLoadingBetweenDates = async (req, res) => {
 export default { createParcel,
      getParcelById,
       getAllParcels, 
+      getParcelLoadingDates,
       getParcelVocherNoUnique,
       updateParcel, 
       deleteParcel,

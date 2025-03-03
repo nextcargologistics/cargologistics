@@ -5,7 +5,7 @@ const bookingSchema = new mongoose.Schema(
     grnNumber: { type: Number,  unique: true }, 
     lrNumber: { type: String, },
     adminUniqueId: { type: Number },
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin"},
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Subadmin"},
     fromCity: { type: String },
     toCity: { type: String },
     pickUpBranch: { type: String },

@@ -25,7 +25,7 @@ router.get("/gst/:senderGst?/:receiverGst?/:parcelGst?", bookingCotroller.getBoo
 
 router.get("/fromCity/:fromCity/toCity/:toCity/vehicalNumber/:vehicalNumber",bookingCotroller.getBookingsfromCityTotoCity)
 
-router.post("/startDate/endDate" ,bookingCotroller.getBookingsBetweenDates);
+router.post("/startDate/endDate/fromCity/toCity" ,bookingCotroller.getBookingsBetweenDates);
 
 router.post("/get-lrNumber",bookingCotroller.getBookinglrNumber)
 
@@ -36,5 +36,7 @@ router.patch("/:id",bookingCotroller.updateBookings)
 router.patch("/grnNoUnique/:grnNoUnique",bookingCotroller.updateGRNBookings)
 
 router.post("/updateAllGrnNumbers",bookingCotroller.updateAllGrnNumbers)
+
+
 
 export default router

@@ -92,7 +92,7 @@ const createBooking = async (req, res) => {
       vehicalNumber,
       bookingType,
       quantity,
-      packageType,
+      packageType,  
       senderName,
       senderMobile,
       senderAddress,
@@ -415,7 +415,7 @@ const getBookingsfromCityTotoCity=async(req,res) => {
 
 const getBookingsBetweenDates = async (req, res) => {
   try {
-    const { startDate, endDate } = req.body;
+    const { startDate, endDate, fromCity, toCity, pickUpBranch } = req.body;
 
     if (!startDate || !endDate) {  
       return res.status(400).json({ message: "Start date and end date are required!" });
@@ -433,23 +433,29 @@ const getBookingsBetweenDates = async (req, res) => {
     // Ensure endDate includes the entire day (set time to 23:59:59)
     end.setHours(23, 59, 59, 999);
 
-    // Find bookings where bookingDate is between startDate and endDate
-    const bookings = await Booking.find({
-      bookingDate: {
-        $gte: start, // Greater than or equal to startDate
-        $lte: end,   // Less than or equal to endDate (full day included)
-      },
-    });
+    // Build the query object dynamically
+    let filter = {
+      bookingDate: { $gte: start, $lte: end } // Date range filter
+    };
+
+    if (fromCity) filter.fromCity = fromCity;
+    if (toCity) filter.toCity = toCity;
+    if (pickUpBranch) filter.pickUpBranch = pickUpBranch;
+
+    // Find bookings based on filters
+    const bookings = await Booking.find(filter);
 
     if (bookings.length === 0) {
-      return res.status(404).json({ message: "No bookings found in the given date range!" });
+      return res.status(404).json({ message: "No bookings found for the given filters!" });
     }
 
     res.status(200).json(bookings);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 export default {createBooking,

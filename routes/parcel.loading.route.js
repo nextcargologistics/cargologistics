@@ -29,4 +29,6 @@ router.get("/fromBranch/toBranch/:fromBranch/:toBranch", parcelController.getPar
 
 router.post("/fromBookingDate/toBookingDate",parcelController.getParcelLoadingBetweenDates)
 
+router.post("/fromBookingDate/toBookingDate/userName",parcelController.getParcelLoadingDates)
+
 export default router

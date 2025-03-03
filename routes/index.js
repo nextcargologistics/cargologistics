@@ -6,6 +6,7 @@ import bookingRouter from './booking.route.js'
 import vehicleRouter from './vehicle.route.js'
 import parcelLoadingRouter from '../routes/parcel.loading.route.js'
 import multiRouter from '../routes/multi.router.js'
+import extraChargeRouter from '../routes/extra.charge.route.js'
 
 const app=express.Router()
 
@@ -16,5 +17,6 @@ app.use("/booking",bookingRouter)
 app.use("/vehicle",vehicleRouter) 
 app.use("/parcel-loading",parcelLoadingRouter)
 app.use("/multi-router",multiRouter)
+app.use("/extra-charge",extraChargeRouter)
 
 export default app
