@@ -48,6 +48,7 @@ const getPackageTypeById = async (req, res) => {
 };
 
 const updatePackageType = async (req, res) => {
+    //....
     try {
         const { id } = req.params;
         const { name } = req.body;
