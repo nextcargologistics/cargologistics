@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Subadmin from '../models/subadmin.auth.model.js';
 import nodemailer from "nodemailer";
@@ -71,7 +71,7 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
-    subadmin.password = await bcrypt.hash(newPassword, 10);
+    subadmin.password = await bcryptjs.hash(newPassword, 10);
     subadmin.resetOTP = null;
     subadmin.otpExpires = null; 
     await subadmin.save();
@@ -92,7 +92,7 @@ const signup = async (req, res) => {
     }
 
     const subadminUniqueId = generateSubadminUniqueId();
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newSubadmin = new Subadmin({
       subadminUniqueId,
@@ -129,7 +129,7 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "Subadmin not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, subadmin.password);
+    const isMatch = await bcryptjs.compare(password, subadmin.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -169,12 +169,12 @@ const changeSubadminPassword = async (req, res) => {
       return res.status(404).json({ message: "Subadmin not found" });
     }
 
-    const isMatch = await bcrypt.compare(oldPassword, subadmin.password);
+    const isMatch = await bcryptjs.compare(oldPassword, subadmin.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Old password is incorrect" });
     }
 
-    subadmin.password = await bcrypt.hash(newPassword, 10);
+    subadmin.password = await bcryptjs.hash(newPassword, 10);
     await subadmin.save();
 
     res.status(200).json({ message: "Password changed successfully" });
