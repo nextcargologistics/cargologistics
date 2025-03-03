@@ -62,17 +62,16 @@ const bookingSchema = new mongoose.Schema(
     deliveryEmployee: { type: String, default: "" },
     
     cancelByUser: { type: String, default: "" },
-    cancelDate: { type: Date, default: null }, // FIXED: Changed from "" to null
+    cancelDate: { type: Date, default: null }, 
     cancelCity: { type: String, default: "" },
     cancelBranch: { type: String, default: "" },
     
-    refundCharge: { type: Number, default: 0 }, // FIXED: Changed from "" to 0
+    refundCharge: { type: Number, default: 0 }, 
     refundAmount: { type: Number, default: 0 }
   }, 
   { timestamps: true }
 );
 
-// Indexes for better query performance
 bookingSchema.index({ grnNumber: 1, adminUniqueId: 1, bookingStatus: 1 });
 
 export default mongoose.model("Booking", bookingSchema);
