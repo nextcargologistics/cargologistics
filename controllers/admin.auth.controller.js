@@ -17,7 +17,7 @@ const signup=async(req,res) => {
       if(existingAdmin){
         return res.status(400).json({message:"Admin email, phone, or username already exists!"})
       }
-      const hashedPassword=await bcryptjs.hash(password,10)
+      const hashedPassword=await bcrypt.hash(password,10)
 
       const adminUniqueId=generateAdminUniqueId()
 
@@ -40,7 +40,7 @@ const login=async(req,res) => {
     if(!admin){
       return res.status(404).json({message:"Invalid email, phone, or username please signup !"})
     }
-    const matchPassword=await bcryptjs.compare(password,admin.password)
+    const matchPassword=await bcrypt.compare(password,admin.password)
 
     if(!matchPassword){
       return res.status(400).json({message:"Invalid password or wrong password"})

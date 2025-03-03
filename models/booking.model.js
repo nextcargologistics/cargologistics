@@ -19,28 +19,26 @@ const bookingSchema = new mongoose.Schema(
     vehicalNumber:{type:String},
     weight: { type: Number },
     actualWeight: { type: Number, default: 0 },
-    unitPrice: { type: Number, required: true },
+    unitPrice: { type: Number},
     totalPrice: { type: Number, default: 0 },
     receiptNo: { type: String, default: "" }, 
     eWayBillNo: { type: String },
     remarks: { type: String },
     
-    senderName: { type: String, required: true },
+    senderName: { type: String},
     senderMobile: { 
       type: Number,   
-      required: true, 
       validate: { validator: (v) => /^\d{10}$/.test(v), message: "Invalid mobile number" }
     },
-    senderAddress: { type: String, required: true },
+    senderAddress: { type: String},
     senderGst: { type: String,default:"" },  
 
-    receiverName: { type: String, required: true },
+    receiverName: { type: String},
     receiverMobile: { 
       type: Number, 
-      required: true, 
       validate: { validator: (v) => /^\d{10}$/.test(v), message: "Invalid mobile number" }
     },
-    receiverAddress: { type: String, required: true },
+    receiverAddress: { type: String,},
     receiverGst: { type: String,default:"" },
 
     parcelGst: { type: String ,default:""},
@@ -52,7 +50,7 @@ const bookingSchema = new mongoose.Schema(
     valueOfGoods: { type: Number, default: 0 },
     bookingStatus: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
 
-    items: { type: Number, required: true },
+    items: { type: Number },
     
     bookingDate: { type: Date, default: () => new Date() },
     ltDate: { type: Date, default: () => new Date() },
