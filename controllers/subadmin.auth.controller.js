@@ -149,6 +149,7 @@ const login = async (req, res) => {
       role: subadmin.role,
       uniqueId: subadmin.subadminUniqueId,
       ipAddress,
+      branch:subadmin.branchName
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
