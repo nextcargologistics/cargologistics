@@ -2,21 +2,21 @@ import mongoose from "mongoose";
   
 const bookingSchema = new mongoose.Schema(
   {  
-    grnNumber: { type: Number, required: true, unique: true }, 
-    lrNumber: { type: String, required: true },
-    adminUniqueId: { type: Number, required: true },
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true },
-    fromCity: { type: String, required: true },
-    toCity: { type: String, required: true },
-    pickUpBranch: { type: String, required: true },
-    dropBranch: { type: String, required: true },
-    location: { type: String, required: true },
-    dispatchType: { type: String, required: true }, 
-    bookingType: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    packageType: { type: String, required: true }, 
+    grnNumber: { type: Number,  unique: true }, 
+    lrNumber: { type: String, },
+    adminUniqueId: { type: Number },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin"},
+    fromCity: { type: String },
+    toCity: { type: String },
+    pickUpBranch: { type: String },
+    dropBranch: { type: String},
+    location: { type: String ,default:""},
+    dispatchType: { type: String}, 
+    bookingType: { type: String},
+    quantity: { type: Number},
+    packageType: { type: String}, 
     contains: { type: Number, default: 0 },
-    vehicalNumber:{type:String,required:true},
+    vehicalNumber:{type:String},
     weight: { type: Number },
     actualWeight: { type: Number, default: 0 },
     unitPrice: { type: Number, required: true },
@@ -27,7 +27,7 @@ const bookingSchema = new mongoose.Schema(
     
     senderName: { type: String, required: true },
     senderMobile: { 
-      type: Number, 
+      type: Number,   
       required: true, 
       validate: { validator: (v) => /^\d{10}$/.test(v), message: "Invalid mobile number" }
     },
@@ -56,7 +56,7 @@ const bookingSchema = new mongoose.Schema(
     
     bookingDate: { type: Date, default: () => new Date() },
     ltDate: { type: Date, default: () => new Date() },
-    ltCity: { type: String, default: "" }, // FIXED: Changed from Date to String
+    ltCity: { type: String, default: "" }, 
     ltBranch: { type: String, default: "" },
     ltEmployee: { type: String, default: "" },
     deliveryEmployee: { type: String, default: "" },

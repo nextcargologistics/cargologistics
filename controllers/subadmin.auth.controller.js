@@ -42,7 +42,7 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const subadmin = await Subadmin.findOne({ email });    z
+    const subadmin = await Subadmin.findOne({ email });    
     if (!subadmin) {
       return res.status(404).json({ message: "Subadmin not found" });
     }

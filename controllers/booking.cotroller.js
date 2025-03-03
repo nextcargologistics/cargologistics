@@ -47,7 +47,7 @@ const generateLrNumber = async (fromCity, location) => {
 const createBooking = async (req, res) => {
   try {
     const { 
-      fromCity, toCity, pickUpBranch, dropBranch, location, dispatchType, bookingType,
+      fromCity, toCity, pickUpBranch, dropBranch,totalPrice, location, dispatchType, bookingType,
       quantity, packageType,contains,vehicalNumber, senderName, senderMobile, senderAddress, unitPrice,
       receiverName, receiverMobile, receiverAddress, serviceCharge = 0, 
       hamaliCharge = 0, doorDeliveryCharge = 0, doorPickupCharge = 0, valueOfGoods = 0,
@@ -57,19 +57,19 @@ const createBooking = async (req, res) => {
       refundCharge = 0, refundAmount = 0,senderGst,receiverGst,parcelGst
     } = req.body;
 
-    // Required fields validation
-    const requiredFields = [
-      "fromCity", "toCity", "pickUpBranch", "dropBranch", "location", "dispatchType", "bookingType",
-      "quantity", "packageType","vehicalNumber" , "senderName", "senderMobile", "senderAddress", "unitPrice",
-      "receiverName", "receiverMobile", "receiverAddress", "adminUniqueId", "adminId",
-      "items", "eWayBillNo"
-    ];
+   
+    // const requiredFields = [
+    //   "fromCity", "toCity", "pickUpBranch", "dropBranch","totalPrice", "location", "dispatchType", "bookingType",
+    //   "quantity", "packageType","vehicalNumber" , "senderName", "senderMobile", "senderAddress", "unitPrice",
+    //   "receiverName", "receiverMobile", "receiverAddress", "adminUniqueId", "adminId",
+    //   "items", "eWayBillNo"
+    // ];
 
-    for (const field of requiredFields) {
-      if (!req.body[field]) {
-        return res.status(400).json({ success: false, message: `${field} is required` });
-      }
-    }
+    // for (const field of requiredFields) {
+    //   if (!req.body[field]) {
+    //     return res.status(400).json({ success: false, message: `${field} is required` });
+    //   }
+    // }
 
     // ✅ Generate GRN and LR numbers
     const grnNumber = await generateGrnNumber();
@@ -101,7 +101,7 @@ const createBooking = async (req, res) => {
       receiverMobile,
       receiverAddress,
       receiptNo: generatedReceiptNo, 
-      totalPrice: unitPrice * quantity,
+      totalPrice,
       grandTotal: (unitPrice * quantity) + serviceCharge + hamaliCharge + doorDeliveryCharge + doorPickupCharge + valueOfGoods,
       serviceCharge,
       hamaliCharge,

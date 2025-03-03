@@ -4,6 +4,7 @@ const parcelSchema = new mongoose.Schema({
     parcelType:{type:String,enum:["loading","unloading"]},
     vocherNoUnique:{type:Number,required:true},
     fromBranch: { type:String, required: true },
+    userNameSender:{type:String,required:true},
     toBranch: { type: String, required: true},
     unloadBranch:{type:String,required:true,default:""},
     vehicalType: { type:String, required: true }, 
