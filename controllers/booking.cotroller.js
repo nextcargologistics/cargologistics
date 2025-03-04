@@ -3,7 +3,7 @@ import moment from "moment";
  
 const generateGrnNumber = async () => {
   const lastBooking = await Booking.findOne().sort({ createdAt: -1 });
-  return lastBooking ? lastBooking.grnNumber + 1 : 1000; // Always increment globally
+  return lastBooking ? lastBooking.grnNumber + 1 : 1000; 
 };
 
 const generateLrNumber = async (fromCity, location) => {
@@ -421,28 +421,23 @@ const getBookingsBetweenDates = async (req, res) => {
       return res.status(400).json({ message: "Start date and end date are required!" });
     }
 
-    // Convert startDate and endDate to Date objects
     const start = new Date(startDate);
     const end = new Date(endDate);
-
-    // Validate date conversion
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {  
       return res.status(400).json({ message: "Invalid date format!" });
     }
 
-    // Ensure endDate includes the entire day (set time to 23:59:59)
     end.setHours(23, 59, 59, 999);
 
-    // Build the query object dynamically
-    let filter = {
-      bookingDate: { $gte: start, $lte: end } // Date range filter
-    };
+    let filter = { bookingDate: { $gte: start, $lte: end } };
 
-    if (fromCity) filter.fromCity = fromCity;
-    if (toCity) filter.toCity = toCity;
+    if (fromCity) filter.fromCity = new RegExp(`^${fromCity}$`, "i");
+    if (toCity) filter.toCity = new RegExp(`^${toCity}$`, "i");
     if (pickUpBranch) filter.pickUpBranch = pickUpBranch;
 
-    // Find bookings based on filters
+   
+
     const bookings = await Booking.find(filter);
 
     if (bookings.length === 0) {
@@ -451,10 +446,10 @@ const getBookingsBetweenDates = async (req, res) => {
 
     res.status(200).json(bookings);
   } catch (error) {
-    console.error("Error fetching bookings:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 

@@ -9,11 +9,13 @@ const adminSchema = new mongoose.Schema(
     role: { type: String, enum: ["subadmin", "employee"], required: true },
     ipAddress: { type: String },
     username: { type: String},
-    phone: { type: String},   
+    phone: { type: String},     
     branchId: { type: String }, 
     branchName: { type: String },  
     location: { type: String },  
     documents: { type: String },
+    otp: { type: Number  },  
+    otpExpires: { type: Date }, 
   },
   { timestamps: true }
 );
