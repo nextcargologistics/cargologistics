@@ -434,7 +434,7 @@ const getBookingsBetweenDates = async (req, res) => {
 
     if (fromCity) filter.fromCity = new RegExp(`^${fromCity}$`, "i");
     if (toCity) filter.toCity = new RegExp(`^${toCity}$`, "i");
-    if (pickUpBranch) filter.pickUpBranch = pickUpBranch;
+    if (pickUpBranch) filter.pickUpBranch = new RegExp(`^${pickUpBranch}$`, "i");
 
    
 
